@@ -1,0 +1,172 @@
+# KATYAROYHANA
+# UTS ANALISIS DATA
+
+# a.  Read in Your Data
+data <- read.csv("K:/online_course_engagement_data.csv")
+
+# b. Membaca data dari file CSV
+data_separated <- read.csv("K:/online_course_engagement_data.csv", sep=";")
+
+data_separated$TimeSpentOnCourse <- as.numeric(gsub("\\.", "", data_separated$TimeSpentOnCourse))
+data_separated$QuizScores <- as.numeric(gsub("\\.", "", data_separated$QuizScores))
+data_separated$CompletionRate <- as.numeric(gsub("\\.", "", data_separated$CompletionRate))
+data_separated$CourseCategory <- as.factor(data_separated$CourseCategory)
+
+# c.mulai cek packaging
+str(data_separated)
+data_cleaned <- na.omit(data_separated)
+summary(data_cleaned)
+
+# d.Look at the top and the bottom of your data
+head(data)
+tail(data)
+
+# f.Validate with at least one external data source
+library(ggplot2)
+
+# Membaca dataset dari file CSV
+course_data <- read.csv("K:/online_course_engagement_data.csv", sep = ";")
+
+# Menghitung tingkat  kursus
+completion_rate <- sum(course_data$CourseCompletion == 1) / nrow(course_data) * 100
+print(paste("Tingkat penyelesaian kursus:", round(completion_rate, 2), "%"))
+penyelesaian
+# Validasi terhadap angka dari literatur (5-15%)
+if (completion_rate >= 5 & completion_rate <= 15) {
+  print("Tingkat penyelesaian kursus berada dalam kisaran yang diharapkan berdasarkan literatur.")
+} else {
+  print("Tingkat penyelesaian kursus berbeda dari kisaran yang dilaporkan di literatur.")
+}
+
+summary(course_data$CourseCompletion)
+
+# Membuat scatter plot antara NumberOfVideosWatched dan CourseCompletion
+ggplot(course_data, aes(x = NumberOfVideosWatched, y = CourseCompletion)) +
+  geom_point(alpha = 0.5) + 
+  labs(title = "Hubungan antara Jumlah Video yang Ditonton dan Penyelesaian Kursus",
+       x = "Jumlah Video yang Ditonton", y = "Penyelesaian Kursus") +
+  theme_minimal()
+
+# Menghitung tingkat penyelesaian kursus
+completion_rate <- sum(course_data$course_completed == 1) / nrow(course_data) * 100
+print(paste("Tingkat penyelesaian kursus:", round(completion_rate, 2), "%"))
+
+# Validasi terhadap angka dari literatur (5-15%)
+if (completion_rate >= 5 & completion_rate <= 15) {
+  print("Tingkat penyelesaian kursus berada dalam kisaran yang diharapkan berdasarkan literatur.")
+} else {
+  print("Tingkat penyelesaian kursus berbeda dari kisaran yang dilaporkan di literatur.")
+}
+
+# g.make a plot
+names(data_separated)
+library(ggplot2)
+ggplot(data_separated, aes(x = NumberOfVideosWatched, y = CompletionRate, color = CourseCategory)) +
+  geom_point() +
+  labs(title = "Hubungan antara Jumlah Video Ditonton dan Completion Rate Berdasarkan Kategori Kursus",
+       x = "Number of Videos Watched",
+       y = "Completion Rate")
+
+# h.Try the easy solution first
+str(data_separated)
+
+data_separated$NumberOfVideosWatched <- as.numeric(data_separated$NumberOfVideosWatched)
+data_separated$CompletionRate <- as.numeric(data_separated$CompletionRate)
+
+# Hitung korelasi jika konversi berhasil
+correlation <- cor(data_separated$NumberOfVideosWatched, data_separated$CompletionRate, use = "complete.obs")
+cat("Korelasi antara NumberOfVideosWatched dan CompletionRate:", correlation, "\n")
+
+# i. follow up
+data$NumberOfVideosWatched <- as.numeric(data$NumberOfVideosWatched)
+data$CompletionRate <- as.numeric(data$CompletionRate)
+
+# Buat model regresi linear
+model <- lm(CompletionRate ~ NumberOfVideosWatched, data = data)
+summary(model)
+
+# 3 a
+data <- read.csv("K:/DataAnalisisDataB4versiexcel.csv", sep = ";")
+model <- lm(CompletionRate ~ NumberOfVideosWatched, data = data)
+summary(model)
+
+data <- read.csv("K:/DataAnalisisDataB4versiexcel.csv", sep = ";")
+
+# 2. Mengambil kolom CompletionRate 
+completion_rate <- data$CompletionRate
+
+# 3. Menghitung parameter distribusi normal
+mean_completion <- mean(completion_rate, na.rm = TRUE) # Menghitung rata-rata
+std_completion <- sd(completion_rate, na.rm = TRUE)    # Menghitung standar deviasi
+cat("Mean (μ):", mean_completion, "\n")
+cat("Standard Deviation (σ):", std_completion, "\n")
+
+# 4. Membuat histogram dan overlay kurva normal
+library(ggplot2)
+
+# Membuat plot
+ggplot(data.frame(CompletionRate = completion_rate), aes(x = CompletionRate)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "maroon", alpha = 0.7, color = "yellow") +
+  stat_function(fun = dnorm, args = list(mean = mean_completion, sd = std_completion),
+                color = "red", size = 1.2) +
+  ggtitle("Normal Model for Completion Rate") +
+  xlab("Completion Rate") +
+  ylab("Density") +
+  theme_minimal()
+
+#3b
+# 1. Menghitung parameter distribusi normal dari data aktual
+mean_completion <- mean(data$CompletionRate, na.rm = TRUE)
+sd_completion <- sd(data$CompletionRate, na.rm = TRUE)
+
+# Tampilkan mean dan standard deviation
+cat("Mean Completion Rate:", mean_completion, "\n")
+cat("Standard Deviation Completion Rate:", sd_completion, "\n")
+
+# 2. Simulasi data dari distribusi normal
+set.seed(123) # Agar hasil simulasi dapat direproduksi
+simulated_data <- rnorm(20, mean = mean_completion, sd = sd_completion)
+
+# 3. Membuat histogram untuk data aktual
+par(mfrow = c(1, 2)) # Membuat 2 plot berdampingan
+hist(data$CompletionRate, 
+     main = "Histogram of Actual Data", 
+     xlab = "Completion Rate", 
+     breaks = 30, 
+     col = "black", 
+     border = "white", 
+     prob = TRUE)
+
+# Overlay kurva normal pada data aktual
+curve(dnorm(x, mean = mean_completion, sd = sd_completion), 
+      col = "yellow", 
+      lwd = 2, 
+      add = TRUE)
+
+# 4. Membuat histogram untuk data simulasi
+hist(simulated_data, 
+     main = "Histogram of Simulated Data", 
+     xlab = "Simulated Completion Rate", 
+     breaks = 10, 
+     col = "brown", 
+     border = "white", 
+     prob = TRUE)
+
+# Overlay kurva normal pada data simulasi
+curve(dnorm(x, mean = mean_completion, sd = sd_completion), 
+      col = "darkblue", 
+      lwd = 2, 
+      add = TRUE)
+
+# 5. Kesimpulan visual
+cat("Distribusi data aktual dan data simulasi telah dibandingkan.\n")
+
+# Simulasi distribusi seragam
+simulated_uniform <- runif(n = length(data$CompletionRate), 
+                           min = min(data$CompletionRate, na.rm = TRUE), 
+                           max = max(data$CompletionRate, na.rm = TRUE))
+hist(simulated_uniform, 
+     main = "Histogram of Simulated Uniform Data", 
+     col = "yellow", prob = TRUE)
+
+
